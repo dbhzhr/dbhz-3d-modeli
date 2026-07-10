@@ -1,0 +1,5 @@
+# Xcode projekt se generira iz project.yml (xcodegen generate)
+Muzej3D.xcodeproj/
+build/
+DerivedData/
+.DS_Store

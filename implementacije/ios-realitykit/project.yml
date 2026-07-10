@@ -1,0 +1,30 @@
+# XcodeGen manifest — `xcodegen generate` stvara Muzej3D.xcodeproj
+name: Muzej3D
+options:
+  bundleIdPrefix: com.stepanic
+  deploymentTarget:
+    iOS: "18.0"
+targets:
+  Muzej3D:
+    type: application
+    platform: iOS
+    sources:
+      - Muzej3D
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.stepanic.muzej3d.ios
+        GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_KEY_UILaunchScreen_Generation: YES
+        INFOPLIST_KEY_UISupportedInterfaceOrientations: "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight"
+        CODE_SIGNING_ALLOWED: NO
+        SWIFT_VERSION: "5.9"
+        # URL scheme za deep-link materijala (dbhz3d://materijal/kamen)
+        INFOPLIST_KEY_CFBundleURLTypes: ""
+    info:
+      path: Muzej3D/Info.plist
+      properties:
+        UILaunchScreen: {}
+        CFBundleDisplayName: DBHZ 3D muzej
+        CFBundleURLTypes:
+          - CFBundleURLName: com.stepanic.muzej3d.ios
+            CFBundleURLSchemes: [dbhz3d]
