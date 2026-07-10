@@ -25,7 +25,7 @@
 |---|---|---|---|---|---|
 | `referentna-implementacija/web-react-three` | ✅ radna referenca | three 0.169, R3F 8, drei 9, React 18, Vite 5 | `npm install && npm run dev` | u produkciji (dbhz-prototip) | — |
 | `implementacije/web-vanilla` | ✅ verificirano | three 0.169.0 (import map, jsdelivr) | `npx serve .` ili `python3 -m http.server` pa otvori `index.html` | pravi Chrome (devtools MCP): portret 390×844 + landscape 844×390 (screenshotovi, FitCamera dist 5.57/3.48), polar 82° runtime, prijelaz materijala mjeren (eksp. rampa metalness 0.02→0.78), nativni fullscreen (trusted CDP klik) + overlay fallback (obrisan `requestFullscreen`) + Escape izlaz, klon scene potvrđen | zahtijeva HTTP server (ES moduli); CDN import map (offline treba vendorirati three) |
-| `implementacije/web-model-viewer` | ⬜ nije počelo | — | — | — | — |
+| `implementacije/web-model-viewer` | ✅ verificirano | @google/model-viewer 4.0.0 (jsdelivr) | `npx serve .` ili `python3 -m http.server` | pravi Chrome (devtools MCP): portret + landscape screenshotovi, polar clamp mjeren (forsiran 20° → vratio se na 82°), zoom clamp (1 m → 2.2 m), animirani prijelaz mjeren (metalness 0.78→0.02 eksp.), nativni fullscreen + overlay fallback + Escape | FitCamera formule i spec osvjetljenje nisu portirani (model-viewer auto-frame + neutralni environment — dokumentirano u README); poseban GLB derivat (normale + materijal); iOS Quick Look traži USDZ (`ios-src`) |
 | `implementacije/expo` | ⬜ nije počelo | — | — | — | — |
 | `implementacije/flutter` | ⬜ nije počelo | — | — | — | — |
 | `implementacije/android-sceneview` | ⬜ nije počelo | — | — | — | — |

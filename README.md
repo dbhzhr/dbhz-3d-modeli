@@ -30,7 +30,7 @@ ovaj repo je destilacija toga u samostalan, prenosiv oblik.
 |---|---|---|
 | `referentna-implementacija/web-react-three` | Vite + React 18 + three.js + R3F | ✅ radna referenca |
 | `implementacije/web-vanilla` | vanilla three.js ES modul (bez Reacta) | ✅ verificirano |
-| `implementacije/web-model-viewer` | Google `<model-viewer>` | ⬜ |
+| `implementacije/web-model-viewer` | Google `<model-viewer>` | ✅ verificirano |
 | `implementacije/expo` | Expo / React Native (WebView reuse) | ⬜ |
 | `implementacije/flutter` | Flutter + `model_viewer_plus` | ⬜ |
 | `implementacije/android-sceneview` | Kotlin + Compose + SceneView (Filament) | ⬜ |

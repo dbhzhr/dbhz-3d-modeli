@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="hr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Bista kralja Tomislava — 3D viewer (model-viewer)</title>
+    <style>
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background: #081209;
+        color: #e8efe9;
+        font-family: system-ui, sans-serif;
+        display: grid;
+        place-items: center;
+      }
+      main {
+        width: min(92vw, 720px);
+        padding: 24px 0 48px;
+      }
+      h1 {
+        font-size: 20px;
+        font-weight: 600;
+      }
+      #viewer {
+        width: 100%;
+        height: min(70vh, 560px);
+        border-radius: 12px;
+        position: relative;
+        overflow: hidden;
+      }
+      p.note {
+        font-size: 13px;
+        color: rgba(232, 239, 233, 0.6);
+      }
+      model-viewer {
+        width: 100%;
+        height: 100%;
+        background: #0c1c13;
+        --poster-color: #0c1c13;
+      }
+    </style>
+    <!-- model-viewer pinан na 4.0.0 -->
+    <script
+      type="module"
+      src="https://cdn.jsdelivr.net/npm/@google/model-viewer@4.0.0/dist/model-viewer.min.js"
+    ></script>
+  </head>
+  <body>
+    <main>
+      <h1>Bista kralja Tomislava — Google &lt;model-viewer&gt;</h1>
+      <div id="viewer"></div>
+      <p class="note">
+        Rotacija samo oko vertikalne osi · zoom kotačićem/pinchom · AR na mobitelu ·
+        deep-link <code>?materijal=bronca|kamen|patina</code>
+      </p>
+    </main>
+
+    <script type="module">
+      // Port VIEWER-SPEC.md na <model-viewer>. Sve spec vrijednosti na jednom mjestu.
+      const SPEC = {
+        background: '#0c1c13',
+        modelUrl: './tomislav-bista.glb', // kopija GLB-a s upisanim PBR materijalom (material API treba slot)
+        fovDeg: 40,
+        polarDeg: 82, // 8° iznad horizonta; min == max => polar lock
+        zoom: { min: 2.2, max: 9 }, // model je normaliziran na 2 jedinice => metri 1:1
+        initialDistance: 3.6,
+        rotationPerSecond: '5.45deg', // puni krug ~66 s (spec autoRotateSpeed 0.9)
+        materialLerpRate: 4.5, // k = 1 − e^(−4.5·dt)
+        variants: {
+          bronca: { color: '#b07d44', metalness: 0.78, roughness: 0.42, label: 'Bronca' },
+          kamen: { color: '#e9e4d3', metalness: 0.02, roughness: 0.93, label: 'Brački kamen' },
+          patina: { color: '#5b9b82', metalness: 0.28, roughness: 0.74, label: 'Bronca s patinom' },
+        },
+        variantOrder: ['bronca', 'kamen', 'patina'],
+        defaultVariant: 'bronca',
+        ui: { activeRing: '#D99E12', buttonBg: 'rgba(6,39,22,0.55)' },
+        attribution: 'Ilustrativna 3D digitalizacija — atribucija nepotvrđena (potvrditi prije objave).',
+      };
+
+      // sRGB hex -> linearni RGBA (glTF baseColorFactor je u linearnom prostoru)
+      function hexToLinear(hex) {
+        const s2l = (c) => (c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4);
+        const n = parseInt(hex.slice(1), 16);
+        return [s2l(((n >> 16) & 255) / 255), s2l(((n >> 8) & 255) / 255), s2l((n & 255) / 255), 1];
+      }
+
+      function variantFromUrl() {
+        const v = new URLSearchParams(location.search).get('materijal');
+        return v && v in SPEC.variants ? v : null;
+      }
+
+      let variant = variantFromUrl() ?? SPEC.defaultVariant;
+      const instances = new Set();
+      const setVariant = (v) => {
+        variant = v;
+        for (const i of instances) i.syncSwatches();
+      };
+
+      // Jedna instanca viewera (inline ili fullscreen overlay — svaka ima svoj
+      // <model-viewer>; GLB dolazi iz browser keša, nema dijeljenog scene grapha).
+      function createInstance(rootEl, { isFullscreen, onFullscreenToggle }) {
+        const mv = document.createElement('model-viewer');
+        mv.src = SPEC.modelUrl;
+        mv.alt = 'Bista kralja Tomislava';
+        mv.cameraControls = true;
+        mv.autoRotate = true;
+        mv.setAttribute('disable-pan', '');
+        mv.setAttribute('interaction-prompt', 'none');
+        mv.setAttribute('rotation-per-second', SPEC.rotationPerSecond);
+        // Polar lock: isti kut u min i max orbit; zoom granice kroz radijus.
+        mv.setAttribute('camera-orbit', `0deg ${SPEC.polarDeg}deg ${SPEC.initialDistance}m`);
+        mv.setAttribute('min-camera-orbit', `auto ${SPEC.polarDeg}deg ${SPEC.zoom.min}m`);
+        mv.setAttribute('max-camera-orbit', `auto ${SPEC.polarDeg}deg ${SPEC.zoom.max}m`);
+        // Fiksiraj fovY na 40° => zoom mijenja SAMO udaljenost (kao u spec-u).
+        mv.setAttribute('field-of-view', `${SPEC.fovDeg}deg`);
+        mv.setAttribute('min-field-of-view', `${SPEC.fovDeg}deg`);
+        mv.setAttribute('max-field-of-view', `${SPEC.fovDeg}deg`);
+        mv.setAttribute('shadow-intensity', '0.5');
+        mv.setAttribute('shadow-softness', '1');
+        mv.setAttribute('ar', '');
+        mv.setAttribute('ar-modes', 'webxr scene-viewer quick-look');
+        rootEl.appendChild(mv);
+
+        // Prijelaz materijala: lerp baseColor/metallic/roughness u rAF petlji
+        // preko model-viewer material API-ja (k = 1 − e^(−4.5·dt)).
+        let cur = { ...SPEC.variants[variant], rgba: hexToLinear(SPEC.variants[variant].color) };
+        let raf = 0;
+        let last = 0;
+        function tick(now) {
+          raf = requestAnimationFrame(tick);
+          const mat = mv.model?.materials?.[0];
+          if (!mat) return;
+          const dt = Math.min((now - (last || now)) / 1000, 0.1);
+          last = now;
+          const t = SPEC.variants[variant];
+          const target = hexToLinear(t.color);
+          const k = 1 - Math.exp(-SPEC.materialLerpRate * dt);
+          cur.rgba = cur.rgba.map((c, i) => c + (target[i] - c) * k);
+          cur.metalness += (t.metalness - cur.metalness) * k;
+          cur.roughness += (t.roughness - cur.roughness) * k;
+          const pbr = mat.pbrMetallicRoughness;
+          pbr.setBaseColorFactor(cur.rgba);
+          pbr.setMetallicFactor(cur.metalness);
+          pbr.setRoughnessFactor(cur.roughness);
+        }
+        mv.addEventListener('load', () => {
+          if (!raf) raf = requestAnimationFrame(tick);
+        });
+
+        // --- kontrole (hrvatski) ---
+        const swatchWrap = document.createElement('div');
+        Object.assign(swatchWrap.style, { position: 'absolute', top: '10px', left: '10px', display: 'flex', gap: '8px' });
+        const swatches = {};
+        for (const v of SPEC.variantOrder) {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.title = SPEC.variants[v].label;
+          btn.setAttribute('aria-label', SPEC.variants[v].label);
+          Object.assign(btn.style, {
+            width: '26px', height: '26px', borderRadius: '50%',
+            background: SPEC.variants[v].color, cursor: 'pointer', padding: '0',
+          });
+          btn.addEventListener('click', () => setVariant(v));
+          swatchWrap.appendChild(btn);
+          swatches[v] = btn;
+        }
+        rootEl.appendChild(swatchWrap);
+
+        function syncSwatches() {
+          for (const v of SPEC.variantOrder) {
+            const on = v === variant;
+            swatches[v].style.border = on ? '2px solid #fff' : '2px solid rgba(255,255,255,0.35)';
+            swatches[v].style.boxShadow = on ? `0 0 0 2px ${SPEC.ui.activeRing}` : '0 1px 4px rgba(0,0,0,0.4)';
+            swatches[v].setAttribute('aria-pressed', String(on));
+          }
+        }
+        syncSwatches();
+
+        const fsBtn = document.createElement('button');
+        fsBtn.type = 'button';
+        const fsLabel = isFullscreen ? 'Izađi iz punog zaslona' : 'Puni zaslon';
+        fsBtn.title = fsLabel;
+        fsBtn.setAttribute('aria-label', fsLabel);
+        Object.assign(fsBtn.style, {
+          position: 'absolute', top: '10px', right: '10px', width: '30px', height: '30px',
+          display: 'grid', placeItems: 'center', borderRadius: '8px',
+          border: '1px solid rgba(255,255,255,0.25)', background: SPEC.ui.buttonBg,
+          cursor: 'pointer', padding: '0', color: '#fff',
+        });
+        fsBtn.innerHTML = isFullscreen
+          ? '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3v5H3M21 8h-5V3M16 21v-5h5M3 16h5v5"/></svg>'
+          : '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8V3h5M16 3h5v5M21 16v5h-5M8 21H3v-5"/></svg>';
+        fsBtn.addEventListener('click', onFullscreenToggle);
+        rootEl.appendChild(fsBtn);
+
+        const caveat = document.createElement('div');
+        caveat.textContent = SPEC.attribution;
+        Object.assign(caveat.style, {
+          position: 'absolute', bottom: '8px', left: '10px', right: '10px',
+          color: 'rgba(255,255,255,0.45)', font: '11px/1.3 system-ui, sans-serif',
+          pointerEvents: 'none',
+        });
+        rootEl.appendChild(caveat);
+
+        return {
+          mv,
+          syncSwatches,
+          dispose() {
+            cancelAnimationFrame(raf);
+            rootEl.replaceChildren();
+          },
+        };
+      }
+
+      // --- fullscreen: nativni API + overlay fallback na <body> (v. CLAUDE.md) ---
+      const container = document.querySelector('#viewer');
+      let fsMode = 'inline';
+      let overlayEl = null;
+      let overlayInstance = null;
+      let prevOverflow = '';
+
+      function openOverlay() {
+        overlayEl = document.createElement('div');
+        Object.assign(overlayEl.style, { position: 'fixed', inset: '0', zIndex: '9999', background: SPEC.background });
+        document.body.appendChild(overlayEl);
+        prevOverflow = document.body.style.overflow;
+        document.body.style.overflow = 'hidden';
+        overlayInstance = createInstance(overlayEl, { isFullscreen: true, onFullscreenToggle: closeOverlay });
+        instances.add(overlayInstance);
+        fsMode = 'overlay';
+      }
+      function closeOverlay() {
+        if (!overlayInstance) return;
+        instances.delete(overlayInstance);
+        overlayInstance.dispose();
+        overlayInstance = null;
+        overlayEl.remove();
+        overlayEl = null;
+        document.body.style.overflow = prevOverflow;
+        fsMode = 'inline';
+      }
+      async function toggleFullscreen() {
+        if (fsMode === 'inline') {
+          if (container.requestFullscreen) {
+            try {
+              await container.requestFullscreen();
+              fsMode = 'native';
+              return;
+            } catch {}
+          } else if (container.webkitRequestFullscreen) {
+            container.webkitRequestFullscreen();
+            fsMode = 'native';
+            return;
+          }
+          openOverlay();
+        } else if (fsMode === 'native') {
+          (document.exitFullscreen ?? document.webkitExitFullscreen)?.call(document);
+          fsMode = 'inline';
+        } else {
+          closeOverlay();
+        }
+      }
+      document.addEventListener('fullscreenchange', () => {
+        if (!document.fullscreenElement && fsMode === 'native') fsMode = 'inline';
+      });
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && fsMode === 'overlay') closeOverlay();
+      });
+
+      const inline = createInstance(container, { isFullscreen: false, onFullscreenToggle: toggleFullscreen });
+      instances.add(inline);
+
+      // Debug za mjernu verifikaciju (chrome-devtools MCP)
+      window.__mvDebug = {
+        get variant() { return variant; },
+        setVariant,
+        toggleFullscreen,
+        get fsMode() { return fsMode; },
+        get inline() { return inline; },
+        get overlay() { return overlayInstance; },
+      };
+    </script>
+  </body>
+</html>
