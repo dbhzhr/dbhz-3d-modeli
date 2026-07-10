@@ -36,7 +36,51 @@ ovaj repo je destilacija toga u samostalan, prenosiv oblik.
 | `implementacije/android-sceneview` | Kotlin + Compose + SceneView (Filament) | ✅ verificirano (fizički Android) |
 | `implementacije/ios-realitykit` | SwiftUI + RealityKit | ✅ verificirano (iOS simulator) · 📱 geste čekaju uređaj |
 
-Detalji (verzije, kako pokrenuti, kako testirano): [`docs/STATUS.md`](docs/STATUS.md).
+Detalji (verzije, kako pokrenuti, kako testirano): [`docs/STATUS.md`](docs/STATUS.md) ·
+cjelovit izvještaj s vizualizacijama: [`docs/IZVJESTAJ.md`](docs/IZVJESTAJ.md).
+
+## Kako dijelovi stoje u odnosu
+
+Portira se **spec ponašanja**, ne kod — a implementacije dijele stvarne artefakte:
+
+```mermaid
+flowchart TD
+    SPEC["docs/VIEWER-SPEC.md<br/>⭐ spec ponašanja viewera<br/>(rotacija samo oko Y · 3 materijala<br/>· FitCamera · fullscreen pravila)"]
+
+    subgraph WEB["Web"]
+        REF["web-react-three<br/>(referenca, u produkciji)"]
+        VAN["web-vanilla<br/>ES modul za svaki CMS"]
+        MV["web-model-viewer<br/>+ AR na mobitelu"]
+    end
+
+    subgraph MOBILE["Mobilne app"]
+        EXPO["expo (React Native)"]
+        FLUT["flutter"]
+    end
+
+    subgraph NATIVE["Nativni moduli"]
+        AND["android-sceneview<br/>(Filament)"]
+        IOS["ios-realitykit"]
+    end
+
+    SPEC --> REF
+    SPEC --> VAN
+    SPEC --> MV
+    SPEC --> FLUT
+    SPEC --> AND
+    SPEC --> IOS
+    VAN -->|"offline bundle u WebView"| EXPO
+    MV -.->|"ista JS logika materijala"| FLUT
+```
+
+Jedan model pokreće sve — derivati se generiraju skriptama iz repoa:
+
+```mermaid
+flowchart LR
+    STL["STL 3D scan"] -->|"alati/fix_upright.py"| GLB["tomislav-bista.glb<br/>⭐ izvor istine"]
+    GLB -->|"glatke normale + PBR materijal"| GLBD["GLB derivat<br/>(model-viewer / flutter / android)"]
+    GLB -->|"alati/glb2usdz.py"| USDZ["USDZ<br/>(iOS + AR Quick Look)"]
+```
 
 ## Brzi start (referentna web implementacija)
 
