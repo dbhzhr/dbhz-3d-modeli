@@ -24,7 +24,7 @@
 | Implementacija | Status | Pinane verzije | Kako pokrenuti | Kako testirano | Poznata ograničenja |
 |---|---|---|---|---|---|
 | `referentna-implementacija/web-react-three` | ✅ radna referenca | three 0.169, R3F 8, drei 9, React 18, Vite 5 | `npm install && npm run dev` | u produkciji (dbhz-prototip) | — |
-| `implementacije/web-vanilla` | ⬜ nije počelo | — | — | — | — |
+| `implementacije/web-vanilla` | ✅ verificirano | three 0.169.0 (import map, jsdelivr) | `npx serve .` ili `python3 -m http.server` pa otvori `index.html` | pravi Chrome (devtools MCP): portret 390×844 + landscape 844×390 (screenshotovi, FitCamera dist 5.57/3.48), polar 82° runtime, prijelaz materijala mjeren (eksp. rampa metalness 0.02→0.78), nativni fullscreen (trusted CDP klik) + overlay fallback (obrisan `requestFullscreen`) + Escape izlaz, klon scene potvrđen | zahtijeva HTTP server (ES moduli); CDN import map (offline treba vendorirati three) |
 | `implementacije/web-model-viewer` | ⬜ nije počelo | — | — | — | — |
 | `implementacije/expo` | ⬜ nije počelo | — | — | — | — |
 | `implementacije/flutter` | ⬜ nije počelo | — | — | — | — |

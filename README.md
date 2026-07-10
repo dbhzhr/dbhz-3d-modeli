@@ -22,6 +22,21 @@ ovaj repo je destilacija toga u samostalan, prenosiv oblik.
 | `docs/00-pregled-tehnologija.md` | analiza i preporuke tehnologija (stanje: srpanj 2026.) |
 | `docs/01…05-*.md` | planovi implementacije po tehnologiji |
 | `docs/3d-bista-tehnicki-vodic.md` | dubinski tehnički vodič (kako je sve izvedeno + naučene lekcije) |
+| `implementacije/<ime>/` | portovi VIEWER-SPEC-a po tehnologiji (status: `docs/STATUS.md`) |
+
+## Implementacije
+
+| Implementacija | Tehnologija | Status |
+|---|---|---|
+| `referentna-implementacija/web-react-three` | Vite + React 18 + three.js + R3F | ✅ radna referenca |
+| `implementacije/web-vanilla` | vanilla three.js ES modul (bez Reacta) | ✅ verificirano |
+| `implementacije/web-model-viewer` | Google `<model-viewer>` | ⬜ |
+| `implementacije/expo` | Expo / React Native (WebView reuse) | ⬜ |
+| `implementacije/flutter` | Flutter + `model_viewer_plus` | ⬜ |
+| `implementacije/android-sceneview` | Kotlin + Compose + SceneView (Filament) | ⬜ |
+| `implementacije/ios-realitykit` | SwiftUI + RealityKit | ⬜ |
+
+Detalji (verzije, kako pokrenuti, kako testirano): [`docs/STATUS.md`](docs/STATUS.md).
 
 ## Brzi start (referentna web implementacija)
 
