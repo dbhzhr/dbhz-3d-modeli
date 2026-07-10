@@ -33,7 +33,7 @@ ovaj repo je destilacija toga u samostalan, prenosiv oblik.
 | `implementacije/web-model-viewer` | Google `<model-viewer>` | ✅ verificirano |
 | `implementacije/expo` | Expo / React Native (WebView reuse) | ✅ verificirano (web + fizički Android + iOS simulator) |
 | `implementacije/flutter` | Flutter + `model_viewer_plus` | ✅ verificirano (web + fizički Android + iOS simulator) |
-| `implementacije/android-sceneview` | Kotlin + Compose + SceneView (Filament) | ⬜ |
+| `implementacije/android-sceneview` | Kotlin + Compose + SceneView (Filament) | ✅ verificirano (fizički Android) |
 | `implementacije/ios-realitykit` | SwiftUI + RealityKit | ⬜ |
 
 Detalji (verzije, kako pokrenuti, kako testirano): [`docs/STATUS.md`](docs/STATUS.md).
