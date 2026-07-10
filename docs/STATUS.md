@@ -33,3 +33,61 @@
 
 Legenda statusa: ⬜ nije počelo · 🔨 u izradi · 🧪 čeka verifikaciju ·
 ✅ verificirano · 📱 needs device testing · ⛔ blocked: <razlog>
+
+---
+
+## Završni izvještaj (2026-07-10)
+
+Svih 6 planiranih implementacija dovršeno je i committano u jednom danu rada.
+Verifikacija: pravi Chrome kroz chrome-devtools MCP (mjerenja runtime stanja,
+ne pogađanje), fizička Motorola Edge 30 Ultra (adb) i iPhone 17 Pro simulator.
+
+### Što je 100 % verificirano
+
+| Implementacija | Kadar P/L | Rotacija samo oko Y | Animirani prijelaz | Fullscreen + povratak |
+|---|---|---|---|---|
+| web-vanilla | ✅ mjereno (FitCamera dist 5.57/3.48) | ✅ polar 82° runtime | ✅ mjerena eksp. rampa | ✅ nativni + overlay put + Escape |
+| web-model-viewer | ✅ screenshotovi | ✅ clamp mjeren (20°→82°) | ✅ mjerena rampa | ✅ oba puta + Escape |
+| expo | ✅ web + 2 mobilne platforme | ✅ (isti web viewer) | ✅ + postMessage most | ✅ (overlay put unutar WebViewa) |
+| flutter | ✅ web + 2 mobilne platforme | ✅ clamp mjeren | ✅ mjerena rampa | ✅ fullscreen ruta (2. instanca) |
+| android-sceneview | ✅ na uređaju | ✅ vertikalni swipe bez efekta | ✅ mid/end frame | ✅ Dialog + safe-area + izlaz |
+| ios-realitykit | ✅ na simulatoru (P + L) | ✅ by design (kamera fiksna) | ✅ deep-link prijelaz | ✅ fullScreenCover + izlaz |
+
+### Što čeka uređaj (📱 needs device testing)
+
+- **ios-realitykit**: drag/pinch geste i AR Quick Look — `simctl` ne može
+  sintetizirati dodire; kod je napisan po istom obrascu kao Android (verificiran).
+- **AR na Androidu** (model-viewer/Flutter Scene Viewer intent): gumb postoji,
+  otvaranje Scene Viewera nije klikano u ovom prolazu.
+
+### Stvarni trud po tehnologiji (izmjereno danas)
+
+| Implementacija | Trud | Glavni trošak vremena |
+|---|---|---|
+| web-vanilla | ~1 h | 1 bug (instanca gazila `position:fixed` overlaya) |
+| web-model-viewer | ~1 h | GLB derivat (normale + material slot), inače trivijalno |
+| expo (WebView) | ~1,5 h + native buildovi | esbuild bundle, expo prebuild/gradle/pods čekanja |
+| flutter | ~2 h | 3 platformske zamke (release permissions, relatedJs na webu, shadow DOM) |
+| android-sceneview | ~2 h | API arheologija SceneView 4.x (Kotlin 2.4, member vs ekstenzija) |
+| ios-realitykit | ~2,5 h | simulator zamke (2 scene, IBL na rotaciju), USDZ pipeline |
+
+Zaključak o trudu: **web viewer se isplati napisati jednom i reusati** (expo je
+čisti reuse; model-viewer/Flutter dijele isti derivat GLB-a i istu JS logiku);
+nativni portovi (SceneView, RealityKit) koštaju ~2× više, ali daju native
+render bez WebViewa i najbolju podlogu za AR.
+
+### Preporuka za DBHZ digitalni muzej
+
+1. **Glavna grana: web** — `referentna-implementacija/web-react-three` za
+   muzejski katalog (puna spec vjernost) + **`web-vanilla`** kao embed modul za
+   CMS/vanjske stranice + **`web-model-viewer`** za brze AR embed stranice.
+   Web pokriva sve posjetitelje bez instalacije; sve tri varijante dijele GLB.
+2. **Mobilna app (ako/kad zatreba): Expo WebView put** — dokazano radi na
+   iOS + Android + web iz jedne codebase uz 100 % reuse web viewera; nadogradnja
+   na react-native-filament tek ako katalog preraste WebView performanse.
+3. **Native moduli (SceneView / RealityKit) držati kao referencu** za ugradnju
+   u postojeće nativne appove trećih strana — oba porta rade i dokumentirana
+   su, ali za samostalni muzej nisu potrebni.
+4. Prije javne objave: **potvrditi atribuciju biste s Družbom** (v.
+   `modeli/tomislav-bista/README.md`) — caveat je ugrađen u UI svih 6+1
+   implementacija.
