@@ -71,3 +71,7 @@ i u panelu, i uz donji rub scene (uključujući fullscreen).
 - materijal: klik u panelu → swatch i URL `materijal=kamen` sinkronizirani;
   deep link `?materijal=kamen` radi; prijelaz mjeren (metalness 0.39→0.78, eksp.)
 - AR Quick Look i dodirne geste čekaju fizički iPhone
+
+## Vezani dokumenti
+
+- [`docs/2026-09-26-javni-katalog.md`](../docs/2026-09-26-javni-katalog.md): odluke, odbačene alternative, mjerenja, zamke i otvorene stavke
