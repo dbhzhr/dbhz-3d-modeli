@@ -50,6 +50,17 @@ npm run deploy    # build + wrangler deploy
 Nepotvrđena atribucija (`potvrdjeno: false`) prikazuje napomenu i u popisu,
 i u panelu, i uz donji rub scene (uključujući fullscreen).
 
+## Dijeljenje i headeri
+
+- `public/og.jpg` (1200×630) je slika za pregled pri dijeljenju linka (WhatsApp, LinkedIn…).
+  To je snimka stvarnog viewera: produkcijska stranica na 1200×630, sakriveni
+  panel, dodan naslovni blok, screenshot kroz chrome-devtools MCP, zatim
+  `sips` na 1200×630 JPEG. Kad katalog dobije više modela, ponovi snimku
+  (tekst trenutno ne spominje broj modela).
+- `public/_headers`: `/assets/*` se kešira zauvijek (hash u imenu datoteke),
+  `/modeli/*` sat vremena, a na svemu su `nosniff` i `Referrer-Policy`.
+- Nakon deploya edge treba ~20 s da posluži novu verziju.
+
 ## Verifikacija (2026-09-26, pravi Chrome kroz chrome-devtools MCP)
 
 - desktop 1440×900: polar 82°, FitCamera udaljenost 3.999 = formula iz spec-a
