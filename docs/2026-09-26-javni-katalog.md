@@ -55,6 +55,18 @@ flowchart LR
 6. `h()` helper u `main.js`: `podaci` su niz parova, pa djeca moraju ići kroz
    `flat(Infinity)`. S `flat()` se ispisivao `[object HTMLElement]`.
 
+7. **Nova Pages custom domena** (`dbhz-prototip.domovina.ai`, 2026-09-26):
+   prvo nema DNS zapisa, zatim kratko vraća **522** dok Cloudflare aktivira
+   domenu i certifikat, a nakon toga 200. 522 u tom prozoru nije kvar i ne
+   treba ništa dirati, samo pričekati.
+
+## Prototip novčanika
+
+Kanonska adresa prototipa od 2026-09-26 je `https://dbhz-prototip.domovina.ai`
+(isti Pages projekt `dbhz-prototip`). `dbhz-prototip.pages.dev` i dalje radi,
+ali se više ne linka. Projekt ima i alias `dbhzw-prototip.domovina.ai`
+(s „w“). Nije jasno je li namjeran; to je pitanje za repo novčanika.
+
 ## Otvoreno
 
 - AR Quick Look (USDZ) i dodirne geste treba provjeriti na fizičkom iPhoneu.
