@@ -11,11 +11,16 @@ Sve ovdje je već **isprobano i radi u produkciji** u DBHZ novčanik prototipu
 ([dbhz-prototip.pages.dev](https://dbhz-prototip.pages.dev), ekran „Bista") —
 ovaj repo je destilacija toga u samostalan, prenosiv oblik.
 
+**Javni katalog:** [dbhz-3d-modeli.domovina.ai](https://dbhz-3d-modeli.domovina.ai)
+(`katalog/`, Vite + Cloudflare Workers; novi model = folder u `modeli/` + unos u
+`modeli/katalog.json`).
+
 ## Struktura
 
 | Putanja | Sadržaj |
 |---|---|
-| `modeli/` | katalog modela (GLB = izvor istine; po modelu README s metapodacima) |
+| `modeli/` | katalog modela (GLB = izvor istine; po modelu README s metapodacima; `katalog.json` = podaci za javni katalog) |
+| `katalog/` | javni katalog 1..N modela na [dbhz-3d-modeli.domovina.ai](https://dbhz-3d-modeli.domovina.ai) |
 | `alati/fix_upright.py` | pipeline STL scan → uspravan, normaliziran GLB (trimesh) |
 | `referentna-implementacija/web-react-three/` | **provjerena** web implementacija (Vite + React 18 + three.js + R3F) — izvor ponašanja za sve ostale |
 | `docs/VIEWER-SPEC.md` | ⭐ tehnološki neutralan spec ponašanja viewera — ovo se portira, ne kod |
@@ -29,6 +34,7 @@ ovaj repo je destilacija toga u samostalan, prenosiv oblik.
 | Implementacija | Tehnologija | Status |
 |---|---|---|
 | `referentna-implementacija/web-react-three` | Vite + React 18 + three.js + R3F | ✅ radna referenca |
+| `katalog` | Vite + vanilla three.js, Cloudflare Workers (static assets) | ✅ verificirano · 🌐 [uživo](https://dbhz-3d-modeli.domovina.ai) |
 | `implementacije/web-vanilla` | vanilla three.js ES modul (bez Reacta) | ✅ verificirano |
 | `implementacije/web-model-viewer` | Google `<model-viewer>` | ✅ verificirano |
 | `implementacije/expo` | Expo / React Native (WebView reuse) | ✅ verificirano (web + fizički Android + iOS simulator) |

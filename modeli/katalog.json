@@ -1,0 +1,32 @@
+{
+  "$opis": "Katalog 3D modela DBHZ — izvor podataka za katalog/ (dbhz-3d-modeli.domovina.ai). Novi model: folder modeli/<id>/ + jedan unos ovdje. Polja v. katalog/README.md.",
+  "modeli": [
+    {
+      "id": "tomislav-bista",
+      "naziv": "Bista kralja Tomislava",
+      "sazetak": "3D digitalizacija biste, prikazana u bronci, bračkom kamenu i bronci s patinom.",
+      "opis": "Model je nastao iz 3D scana biste i pripremljen za prikaz u pregledniku: nagib scana je geometrijski ispravljen, a mreža pojednostavljena na oko 80 tisuća trokuta. Model nema vlastiti materijal, nego ga zadaje preglednik, pa se ista bista može vidjeti kao odljev u bronci, u bračkom kamenu ili u bronci s patinom. Služi kao vizualizacija uz obilježavanje 1100. obljetnice Hrvatskoga Kraljevstva.",
+      "datoteke": {
+        "glb": "tomislav-bista.glb",
+        "usdz": "tomislav-bista.usdz"
+      },
+      "materijali": ["bronca", "kamen", "patina"],
+      "atribucija": {
+        "potvrdjeno": false,
+        "tekst": "Autorstvo skulpture s koje potječe scan nije potvrđeno. Model je ilustrativna 3D digitalizacija i ne pripisuje se nijednom autoru dok se atribucija ne potvrdi."
+      },
+      "podaci": [
+        ["Izvor", "3D scan (STL, 300 tisuća trokuta)"],
+        ["Obrada", "ispravljen nagib scana od 42,8°, decimacija, centriranje"],
+        ["Geometrija", "oko 80 tisuća trokuta, bez tekstura"],
+        ["Datoteke", "GLB 1,4 MB · USDZ 4,7 MB (za AR na iOS-u)"],
+        ["Licenca", "još nije utvrđena"],
+        ["Dodano", "10. 7. 2026."]
+      ],
+      "povezano": {
+        "naziv": "Prototip DBHZ aplikacije, ekran „Bista“",
+        "url": "https://dbhz-prototip.pages.dev/?screen=bista"
+      }
+    }
+  ]
+}

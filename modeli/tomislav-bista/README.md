@@ -26,3 +26,6 @@ DBHZ je glavni inicijator obilježavanja 1100. obljetnice Hrvatskoga Kraljevstva
 U DBHZ novčanik prototipu model služi kao crowdfunding vizualizacija (odljev u
 bronci/kamenu i postavljanje po gradovima) — ekran `bista`,
 [dbhz-prototip.pages.dev](https://dbhz-prototip.pages.dev/?screen=bista).
+
+Javni katalog: [dbhz-3d-modeli.domovina.ai/?id=tomislav-bista](https://dbhz-3d-modeli.domovina.ai/?id=tomislav-bista)
+(s napomenom o nepotvrđenoj atribuciji).

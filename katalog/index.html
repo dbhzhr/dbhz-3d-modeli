@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="hr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>3D modeli · DBHZ</title>
+    <meta
+      name="description"
+      content="Digitalni muzej Družbe „Braća Hrvatskoga Zmaja“: katalog 3D modela koje možete okretati i pregledavati u pregledniku."
+    />
+    <meta name="theme-color" content="#0c1c13" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body>
+    <div class="app">
+      <header class="traka">
+        <a class="marka" href="/">
+          <span class="marka-nadnaslov">Digitalni muzej DBHZ</span>
+          <span class="marka-naslov">3D modeli</span>
+        </a>
+        <button class="gumb gumb-popis" type="button" aria-controls="popis" aria-expanded="false">
+          Popis <span class="broj" data-broj></span>
+        </button>
+      </header>
+
+      <aside class="popis" id="popis" aria-label="Popis modela">
+        <div class="popis-glava">
+          <a class="marka" href="/">
+            <span class="marka-nadnaslov">Digitalni muzej DBHZ</span>
+            <span class="marka-naslov">3D modeli</span>
+          </a>
+          <p class="popis-uvod">
+            Katalog 3D digitalizacija Družbe „Braća Hrvatskoga Zmaja“. Modele možete okretati
+            i približavati izravno u pregledniku.
+          </p>
+        </div>
+        <h2 class="popis-naslov">Modeli <span class="broj" data-broj></span></h2>
+        <ul class="popis-stavke" id="popis-stavke"></ul>
+        <footer class="popis-podnozje">
+          <a href="https://github.com/dbhzhr/dbhz-3d-modeli" rel="noopener">Izvorni kod na GitHubu</a>
+        </footer>
+      </aside>
+      <div class="zastor" hidden></div>
+
+      <main class="pozornica">
+        <div class="viewer" id="viewer"></div>
+        <p class="stanje" id="stanje" role="status">Učitavam model…</p>
+      </main>
+
+      <section class="info" id="info" aria-live="polite"></section>
+    </div>
+
+    <noscript>
+      <p class="noscript">Za prikaz 3D modela potrebno je uključiti JavaScript.</p>
+    </noscript>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

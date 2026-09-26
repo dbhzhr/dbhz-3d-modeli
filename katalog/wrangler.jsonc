@@ -1,0 +1,15 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "dbhz-3d-modeli",
+  // Cloudflare account „D.O.M.“ (isti kao dbhz-prototip i zona domovina.ai)
+  "account_id": "7dc7167b7e2e00923bfa7cd697df14e4",
+  "compatibility_date": "2026-09-26",
+  // Samo statični assets (Vite build) — bez Worker skripte
+  "assets": {
+    "directory": "./dist",
+    "not_found_handling": "404-page"
+  },
+  "routes": [{ "pattern": "dbhz-3d-modeli.domovina.ai", "custom_domain": true }],
+  "workers_dev": true,
+  "observability": { "enabled": true }
+}
