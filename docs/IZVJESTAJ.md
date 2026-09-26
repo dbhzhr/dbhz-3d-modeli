@@ -108,7 +108,7 @@ rampu `0.78 → 0.44 → 0.25 → … → 0.02`; FitCamera udaljenost 5.57 (port
 
 | # | Implementacija | Tehnologija | Verificirano na | Za koga je |
 |---|---|---|---|---|
-| 0 | `referentna-implementacija/web-react-three` | Vite + React + three.js | u produkciji ([dbhz-prototip](https://dbhz-prototip.pages.dev/?screen=bista)) | glavni web katalog |
+| 0 | `referentna-implementacija/web-react-three` | Vite + React + three.js | u produkciji ([dbhz-prototip](https://dbhz-prototip.domovina.ai/?screen=bista)) | glavni web katalog |
 | 1 | `implementacije/web-vanilla` | vanilla three.js ES modul | Chrome (mjerenja) | ugradnja u bilo koji CMS / statičku stranicu |
 | 2 | `implementacije/web-model-viewer` | Google `<model-viewer>` | Chrome (mjerenja) | brze embed stranice s AR-om |
 | 3 | `implementacije/expo` | React Native (WebView reuse) | Chrome + Motorola + iPhone sim. | mobilna app iz jedne codebase |

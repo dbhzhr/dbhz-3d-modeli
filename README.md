@@ -8,7 +8,7 @@ bilo koju postojeću aplikaciju** — web, Expo/React Native, Flutter, nativni
 Android (Kotlin) ili iOS (Swift).
 
 Sve ovdje je već **isprobano i radi u produkciji** u DBHZ novčanik prototipu
-([dbhz-prototip.pages.dev](https://dbhz-prototip.pages.dev), ekran „Bista") —
+([dbhz-prototip.domovina.ai](https://dbhz-prototip.domovina.ai), ekran „Bista") —
 ovaj repo je destilacija toga u samostalan, prenosiv oblik.
 
 **Javni katalog:** [dbhz-3d-modeli.domovina.ai](https://dbhz-3d-modeli.domovina.ai)
